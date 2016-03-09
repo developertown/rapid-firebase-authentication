@@ -34,17 +34,12 @@ class FirebaseLogin extends Component {
     return (typeof(this.props.firebase) === "string") ? new Firebase(this.props.firebase) : this.props.firebase;
   };
 
-  componentDidMount() {
-    //let form = this.getDOMNode();
-    //debugger;
-  }
-
   _authHandler(e) {
     e.preventDefault();
 
     if (!e.target.email || !e.target.password) {
       alert("FirebaseLogin setup error (see console for details");
-      console.log("FirebaseLogin missing child form fields named: 'email' and/or 'password'");
+      console.error("FirebaseLogin missing child form fields named: 'email' and/or 'password'");
       return;
     }
 
