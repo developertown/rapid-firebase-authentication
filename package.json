@@ -1,10 +1,11 @@
 {
   "name": "rapid-firebase-authentication",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A React-based module to be used in rapid prototyping to quickly add registration/login/reset functionality to a firebase-backed application",
-  "main": "src/FirebaseLogin.jsx",
+  "main": "dist/RapidFirebaseLogin.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "prepublish": "webpack"
   },
   "repository": {
     "type": "git",
