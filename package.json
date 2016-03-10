@@ -15,7 +15,24 @@
     "react",
     "authentication"
   ],
-  "author": "DeveloperTown",
+  "author": {
+    "name": "DeveloperTown",
+    "url": "https://github.com/developertown"
+  },
+  "contributors": [
+    {
+      "name": "Jon Nolen",
+      "url": "https://github.com/jonnolen"
+    },
+    {
+      "name": "Nick Kiser",
+      "url": "https://github.com/nkiser"
+    },
+    {
+      "name": "Jason Vasquez",
+      "url": "https://github.com/jasonvasquez"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/developertown/rapid-firebase-authentication/issues"
