@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/FirebaseLogin.jsx',
   output: {
     path: './dist',
     filename: 'RapidFirebaseLogin.js',
