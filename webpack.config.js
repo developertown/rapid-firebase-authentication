@@ -8,6 +8,7 @@ module.exports = {
     library: 'RapidFirebaseLogin',
     libraryTarget: 'umd'
   },
+  devtool: 'source-map',
   externals: {
     react: {
       root: 'React',
