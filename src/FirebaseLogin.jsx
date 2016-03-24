@@ -16,36 +16,37 @@ class FirebaseLogin extends Component {
     onAuthFailure: PropTypes.func,
     onBeginAuthentication: PropTypes.func,
     onEndAuthentication: PropTypes.func,
+    children: PropTypes.object
   };
 
   static defaultProps = {
     authPersistence: "default",
     onAuthSuccess: (firebaseRef, authResult) => {
-      console.log("Firebase Login Success", authResult);
+      console.log("Firebase Login Success", authResult);  // eslint-disable-line no-console
       alert("Logged in successfully!\n\n(supply an 'onAuthSuccess' prop to suppress this message)");
     },
     onAuthFailure: (message) => {
-      console.log(`Firebase Login Failure: ${message}`);
+      console.log(`Firebase Login Failure: ${message}`);  // eslint-disable-line no-console
       alert(`Login failure: ${message}\n\n(supply an 'onAuthFailure' prop to suppress this message)`);
     },
     onBeginAuthentication: () => {
-      console.log("Authentication attempt starting");
+      console.log("Authentication attempt starting");  // eslint-disable-line no-console
     },
     onEndAuthentication: () => {
-      console.log("Authentication attempt complete");
+      console.log("Authentication attempt complete");  // eslint-disable-line no-console
     }
   };
 
   get fbref() {
     return (typeof(this.props.firebase) === "string") ? new Firebase(this.props.firebase) : this.props.firebase;
-  };
+  }
 
   _authHandler(e) {
     e.preventDefault();
 
     if (!e.target.email || !e.target.password) {
       alert("FirebaseLogin setup error (see console for details");
-      console.error("FirebaseLogin missing child form fields named: 'email' and/or 'password'");
+      console.error("FirebaseLogin missing child form fields named: 'email' and/or 'password'");  // eslint-disable-line no-console
       return;
     }
 
