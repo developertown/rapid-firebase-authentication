@@ -7,13 +7,19 @@ class FirebaseLogin extends Component {
       React.PropTypes.string,
       React.PropTypes.object
     ]).isRequired,
+    authPersistence: PropTypes.oneOf([
+        "default",      //whatever is configured in firebase dashboard (also the default value of this component)
+        "sessionOnly",  //authenticated for the lifetime of the current window
+        "none"          //no persistence -- refresh/reload will clear authentication
+    ]).isRequired,
     onAuthSuccess: PropTypes.func,
     onAuthFailure: PropTypes.func,
     onBeginAuthentication: PropTypes.func,
-    onEndAuthentication: PropTypes.func
+    onEndAuthentication: PropTypes.func,
   };
 
   static defaultProps = {
+    authPersistence: "default",
     onAuthSuccess: (firebaseRef, authResult) => {
       console.log("Firebase Login Success", authResult);
       alert("Logged in successfully!\n\n(supply an 'onAuthSuccess' prop to suppress this message)");
@@ -48,7 +54,7 @@ class FirebaseLogin extends Component {
 
     this.props.onBeginAuthentication();
     let fb = this.fbref;
-    fb.authWithPassword({email, password})
+    fb.authWithPassword({email, password}, {remember: this.props.authPersistence})
         .then((authResult) => {
           this.props.onAuthSuccess(fb, authResult);
           this.props.onEndAuthentication();
