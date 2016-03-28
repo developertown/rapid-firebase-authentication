@@ -29,6 +29,14 @@ describe('FirebaseLogin', () => {
     expect(console.error.calls.mostRecent().args[0]).toMatch(/Required prop `firebase` was not specified/);
   });
 
+  it ('defaults to password authentication', () => {
+    const loginComponent = TestUtils.renderIntoDocument(
+        <FirebaseLogin />
+    );
+
+    expect(loginComponent.props.authProvider).toEqual("password");
+  });
+
   describe('fbref', () => {
     it('returns the value of the firebase prop if it is an object', () => {
       const inputRef = {foo: "bar"};
@@ -54,32 +62,34 @@ describe('FirebaseLogin', () => {
   });
 
   describe('_authHandler', () => {
-    it('emits an error to the log if either the email or password field is missing', () => {
-      spyOn(console, 'error');
+    describe('when configured for password authentication', () => {
+      it('emits an error to the log if either the email or password field is missing', () => {
+        spyOn(console, 'error');
 
-      const loginComponent = TestUtils.renderIntoDocument(
-          <FirebaseLogin />
-      );
-      var form = TestUtils.findRenderedDOMComponentWithTag(loginComponent, 'form');
+        const loginComponent = TestUtils.renderIntoDocument(
+            <FirebaseLogin />
+        );
+        var form = TestUtils.findRenderedDOMComponentWithTag(loginComponent, 'form');
 
-      TestUtils.Simulate.submit(form);
+        TestUtils.Simulate.submit(form);
 
-      expect(console.error.calls.mostRecent().args[0]).toMatch(/missing child form fields named/);
-    });
+        expect(console.error.calls.mostRecent().args[0]).toMatch(/missing child form fields named/);
+      });
 
-    it('does not emit an error to the log if email and password fields are defined', () => {
-      spyOn(console, 'error');
+      it('does not emit an error to the log if email and password fields are defined', () => {
+        spyOn(console, 'error');
 
-      const loginComponent = TestUtils.renderIntoDocument(
-          <FirebaseLogin>
-            <input type="text" name="email"/>
-            <input type="password" name="password"/>
-          </FirebaseLogin>
-      );
-      var form = TestUtils.findRenderedDOMComponentWithTag(loginComponent, 'form');
-      TestUtils.Simulate.submit(form);
+        const loginComponent = TestUtils.renderIntoDocument(
+            <FirebaseLogin>
+              <input type="text" name="email"/>
+              <input type="password" name="password"/>
+            </FirebaseLogin>
+        );
+        var form = TestUtils.findRenderedDOMComponentWithTag(loginComponent, 'form');
+        TestUtils.Simulate.submit(form);
 
-      expect(console.errors).toBeUndefined();
+        expect(console.errors).toBeUndefined();
+      });
     });
   });
 });
