@@ -7,10 +7,14 @@ class FirebaseLogin extends Component {
       React.PropTypes.string,
       React.PropTypes.object
     ]).isRequired,
+    authProvider: React.PropTypes.oneOf([
+      "password",
+      "google"
+    ]).isRequired,
     authPersistence: PropTypes.oneOf([
-        "default",      //whatever is configured in firebase dashboard (also the default value of this component)
-        "sessionOnly",  //authenticated for the lifetime of the current window
-        "none"          //no persistence -- refresh/reload will clear authentication
+      "default",      //whatever is configured in firebase dashboard (also the default value of this component)
+      "sessionOnly",  //authenticated for the lifetime of the current window
+      "none"          //no persistence -- refresh/reload will clear authentication
     ]).isRequired,
     onAuthSuccess: PropTypes.func,
     onAuthFailure: PropTypes.func,
@@ -20,6 +24,7 @@ class FirebaseLogin extends Component {
   };
 
   static defaultProps = {
+    authProvider: "password",
     authPersistence: "default",
     onAuthSuccess: (firebaseRef, authResult) => {
       console.log("Firebase Login Success", authResult);  // eslint-disable-line no-console
@@ -41,28 +46,50 @@ class FirebaseLogin extends Component {
     return (typeof(this.props.firebase) === "string") ? new Firebase(this.props.firebase) : this.props.firebase;
   }
 
-  _authHandler(e) {
-    e.preventDefault();
 
+  passwordAuthHandler(e, fb, authOptions) {
     if (!e.target.email || !e.target.password) {
-      alert("FirebaseLogin setup error (see console for details");
-      console.error("FirebaseLogin missing child form fields named: 'email' and/or 'password'");  // eslint-disable-line no-console
-      return;
+      throw "FirebaseLogin configured for password authentication, " +
+      "but missing child form fields named: 'email' and/or 'password'";
     }
 
     let email = e.target.email.value;
     let password = e.target.password.value;
 
-    this.props.onBeginAuthentication();
-    let fb = this.fbref;
-    fb.authWithPassword({email, password}, {remember: this.props.authPersistence})
+    return fb.authWithPassword({email, password}, authOptions);
+  }
+
+  googleAuthHandler(e, fb, authOptions) {
+    return fb.authWithOAuthPopup("google", authOptions);
+  }
+
+  _authHandler(e) {
+    e.preventDefault();
+
+    const authHandlers = {
+      password: ::this.passwordAuthHandler,
+      google: ::this.googleAuthHandler
+    };
+
+    const { authProvider, onBeginAuthentication, onEndAuthentication, onAuthSuccess, onAuthFailure, authPersistence } = this.props;
+    const authHandler = authHandlers[authProvider];
+    const fb = this.fbref;
+
+    if (typeof authHandler === "undefined") {
+      alert("FirebaseLogin setup error.  Invalid authProvider specified");
+      console.error(`FirebaseLogin authProvider of '${authProvider}' is not valid`);  // eslint-disable-line no-console
+      return;
+    }
+
+    onBeginAuthentication();
+    authHandler(e, fb, {remember: authPersistence})
         .then((authResult) => {
-          this.props.onAuthSuccess(fb, authResult);
-          this.props.onEndAuthentication();
+          onAuthSuccess(fb, authResult);
+          onEndAuthentication();
         })
         .catch(err => {
-          this.props.onAuthFailure(err);
-          this.props.onEndAuthentication();
+          onAuthFailure(err);
+          onEndAuthentication();
         });
   }
 
